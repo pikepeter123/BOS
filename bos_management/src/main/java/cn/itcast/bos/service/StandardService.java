@@ -9,7 +9,8 @@ import java.util.List;
  * description:
  */
 public interface StandardService {
-    List<Standard> getAllStandard();
+    
+    List<Standard> getAllStandards();
 
     void addStandard(Standard standard);
 }

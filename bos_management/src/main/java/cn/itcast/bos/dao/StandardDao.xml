@@ -14,8 +14,32 @@ resultType：查询结果的数据类型，如果时候pojo应该给全路径。
 	4、接口方法的返回值类型要和resultType一致
  -->
 <mapper namespace="cn.itcast.bos.dao.StandardDao">
-    <select id="getAllStandard" resultType="cn.itcast.bos.pojo.base.Standard">
-        SELECT *
+    <sql id="all_column_of_standard">
+        C_ID,
+        C_MAX_LENGTH,
+        C_MAX_WEIGHT,
+        C_MIN_LENGTH,
+        C_MIN_WEIGHT,
+        C_NAME,
+        C_OPERATING_COMPANY,
+        C_OPERATING_TIME,
+        C_OPERATOR
+    </sql>
+
+    <resultMap id="getAllStandards_map" type="cn.itcast.bos.pojo.base.Standard">
+        <id column="C_ID" property="id"/>
+        <result column="C_MAX_LENGTH" property="maxLength"/>
+        <result column="C_MAX_WEIGHT" property="maxWeight"/>
+        <result column="C_MIN_LENGTH" property="minLength"/>
+        <result column="C_MIN_WEIGHT" property="minWeight"/>
+        <result column="C_NAME" property="name"/>
+        <result column="C_OPERATING_COMPANY" property="operationCompany"/>
+        <result column="C_OPERATOR" property="operator"/>
+        <result column="C_OPERATING_TIME" property="operatingTime"/>
+    </resultMap>
+    <select id="getAllStandards" resultMap="getAllStandards_map">
+        SELECT
+        <include refid="all_column_of_standard"/>
         FROM t_standard
     </select>
 
@@ -23,10 +47,49 @@ resultType：查询结果的数据类型，如果时候pojo应该给全路径。
         <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
             SELECT nvl(max(C_ID), 0) + 1 FROM T_STANDARD
         </selectKey>
-        INSERT INTO T_STANDARD (C_ID, C_MAX_LENGTH, C_MAX_WEIGHT, C_MIN_LENGTH, C_MIN_WEIGHT, C_NAME,
-        C_OPERATING_COMPANY, C_OPERATING_TIME, C_OPERATOR)
-        VALUES (#{id,jdbcType=NUMERIC}, #{maxLength,jdbcType=NUMERIC}, #{maxWeight,jdbcType=NUMERIC},
-        #{minLength,jdbcType=NUMERIC}, #{minWeight,jdbcType=NUMERIC}, #{name,jdbcType=VARCHAR},
-        #{operatingCompany,jdbcType=VARCHAR}, #{operatingTime,jdbcType=TIMESTAMP}, #{operator,jdbcType=VARCHAR})
+        INSERT INTO T_STANDARD (<include refid="all_column_of_standard"/>)
+        VALUES (
+        #{id,jdbcType=NUMERIC},
+        #{maxLength,jdbcType=NUMERIC},
+        #{maxWeight,jdbcType=NUMERIC},
+        #{minLength,jdbcType=NUMERIC},
+        #{minWeight,jdbcType=NUMERIC},
+        #{name,jdbcType=VARCHAR},
+        #{operatingCompany,jdbcType=VARCHAR},
+        #{operatingTime,jdbcType=TIMESTAMP},
+        #{operator,jdbcType=VARCHAR})
     </insert>
+
+    <update id="updateStandard" parameterType="cn.itcast.bos.pojo.base.Standard">
+        UPDATE T_STANDARD
+        <set>
+            <if test="#{name} != null AND #{name} != ''">
+                C_NAME = #{name,jdbcType.VARCHAR},
+            </if>
+            <if test="#{maxLength} != null AND #{maxLength} != ''">
+                C_MAX_LENGTH = #{maxLength,jdbcType.NUMERIC},
+            </if>
+            <if test="#{maxWeight} != null AND #{maxWeight} != ''">
+                C_MAX_WEIGHT = #{maxWeight,jdbcType.NUMERIC},
+            </if>
+            <if test="#{minLength} != null AND #{minLength} != ''">
+                C_MIN_LENGTH = #{minLength,jdbcType.NUMERIC},
+            </if>
+            <if test="#{minWeight} != null AND #{minWeight} != ''">
+                C_MIN_WEIGHT = #{minWeight,jdbcType.NUMERIC},
+            </if>
+            <if test="#{operatingTime} != null AND #{operatingTime} != ''">
+                C_OPERATING_TIME = #{operatingTime,jdbcType.VARCHAR},
+            </if>
+            <if test="#{operator} != null AND #{operator} != ''">
+                C_OPERATOR = #{operator,jdbcType.VARCHAR},
+            </if>
+            <if test="#{operatingCompany} != null AND #{operatingCompany} != ''">
+                C_OPERATING_COMPANY = #{operatingCompany,jdbcType.VARCHAR},
+            </if>
+        </set>
+        <where>
+            C_ID = #{id}
+        </where>
+    </update>
 </mapper>

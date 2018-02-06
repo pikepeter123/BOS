@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * Created by 31364 on 2018/2/5.
- * description:
+ * description: 收派标准业务层接口实现类
  */
 @Service
 @Transactional
@@ -20,11 +20,17 @@ public class StandardServiceImpl implements StandardService {
     @Autowired
     private StandardDao standardDao;
 
-    public List<Standard> getAllStandard() {
-        return standardDao.getAllStandard();
+    public List<Standard> getAllStandards() {
+        return standardDao.getAllStandards();
     }
 
     public void addStandard(Standard standard) {
-        standardDao.addStandard(standard);
+        if(standard.getId() == null) {
+//            如果id字段没有值
+            standardDao.addStandard(standard);
+        } else {
+//            id字段有值，执行更新操作
+            standardDao.updateStandard(standard);
+        }
     }
 }

@@ -6,11 +6,13 @@ import java.util.List;
 
 /**
  * Created by 31364 on 2018/2/5.
- * description:
+ * description: 收派标准持久层接口
  */
 public interface StandardDao {
 
-    List<Standard> getAllStandard();
+    List<Standard> getAllStandards();
 
     void addStandard(Standard standard);
+
+    void updateStandard(Standard standard);
 }

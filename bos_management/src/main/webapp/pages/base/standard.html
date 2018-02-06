@@ -37,7 +37,7 @@
 
             //点击收派标准窗口中的保存按钮，提交表单
             $("#save").click(function () {
-                if($("#standardForm").form('validate')) {
+                if ($("#standardForm").form('validate')) {
                     //如果表单校验成功就提交
                     $("#standardForm").submit();
                 }
@@ -60,21 +60,34 @@
             text: '修改',
             iconCls: 'icon-edit',
             handler: function () {
-                alert('修改');
+                // 修改收派标准只能选择一条记录进行操作
+                var rows = $("#grid").datagrid('getSelections');
+                if (rows.length != 1) {
+                    // 选中了不止一条或者一条都没选中
+                    $.messager.alert("警告", "编辑收派标准只能选择一条记录进行操作", "warning");
+                } else {
+                    var row = rows[0];
+                    // 将选中行的数据回显到表单中
+                    $("#standardForm").form('load', row);
+                    // 给表单中的隐藏字段赋值
+                    $("#standardId").val(row.id);
+                    // 打开收派标准编辑和添加的窗口
+                    $("#standardWindow").window('open');
+                }
             }
         }, {
             id: 'button-delete',
             text: '作废',
             iconCls: 'icon-cancel',
             handler: function () {
-                alert('作废');
+                $.messager.alert("提示信息", "未实现", "info");
             }
         }, {
             id: 'button-restore',
             text: '还原',
             iconCls: 'icon-save',
             handler: function () {
-                alert('还原');
+                $.messager.alert("提示信息", "未实现", "info");
             }
         }];
 
@@ -146,14 +159,14 @@
                 <tr class="title">
                     <td colspan="2">收派标准信息
                         <!--提供隐藏域 装载id -->
-                        <input type="hidden" name="id"/>
+                        <input type="hidden" name="id" id="standardId"/>
                     </td>
                 </tr>
                 <tr>
                     <td>收派标准名称</td>
                     <td>
                         <input type="text" name="name"
-                               class="easyui-validatebox" data-options="required:true"/>
+                               class="easyui-validatebox" data-options="required: true"/>
                     </td>
                 </tr>
                 <tr>
