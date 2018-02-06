@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace是命名空间，作用sql语句的隔离，后面还有重要作用
+#{}作用就是占位符，相当于jdbc的“?”
+parameterType：查询的参数类型
+resultType：查询结果的数据类型，如果时候pojo应该给全路径。
+-->
+<!-- mapper代理的开发规则：
+	1、namespace必须时候接口的全限定名
+	2、Statementid必须和接口的方法名称一致
+	3、接口方法的参数类型要和parameterType要一致
+	4、接口方法的返回值类型要和resultType一致
+ -->
+<mapper namespace="cn.itcast.bos.dao.StandardDao">
+    <select id="getAllStandard" resultType="cn.itcast.bos.pojo.base.Standard">
+        SELECT *
+        FROM t_standard
+    </select>
+
+    <insert id="addStandard" parameterType="cn.itcast.bos.pojo.base.Standard">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+            SELECT nvl(max(C_ID), 0) + 1 FROM T_STANDARD
+        </selectKey>
+        INSERT INTO T_STANDARD (C_ID, C_MAX_LENGTH, C_MAX_WEIGHT, C_MIN_LENGTH, C_MIN_WEIGHT, C_NAME,
+        C_OPERATING_COMPANY, C_OPERATING_TIME, C_OPERATOR)
+        VALUES (#{id,jdbcType=NUMERIC}, #{maxLength,jdbcType=NUMERIC}, #{maxWeight,jdbcType=NUMERIC},
+        #{minLength,jdbcType=NUMERIC}, #{minWeight,jdbcType=NUMERIC}, #{name,jdbcType=VARCHAR},
+        #{operatingCompany,jdbcType=VARCHAR}, #{operatingTime,jdbcType=TIMESTAMP}, #{operator,jdbcType=VARCHAR})
+    </insert>
+</mapper>
